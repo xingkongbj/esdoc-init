@@ -13,3 +13,10 @@ $ npm i -g esdoc-init
 # Only support react
 $ esdoc-init # Use on Directory which has package.json 
 ```
+
+## Run
+
+```
+# Use on Directory which has package.json
+$ npm run esdoc
+```
