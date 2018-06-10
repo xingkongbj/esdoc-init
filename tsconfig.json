@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    // 转换后的目标语言
+    "module": "commonjs",
+    // 转换后的模块加载方式
+    "esModuleInterop": true,
+    // 允许esModule模块模式
+    "moduleResolution": "node",
+    //
+    "outDir": "dist",
+    // 输出目录
+    "removeComments": true,
+    // 去除注释
+    "strict": true,
+    // 严格模式
+    "lib": [
+      "ES2017",
+      "ScriptHost"
+    ]
+    // 转换库
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}

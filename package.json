@@ -1,0 +1,42 @@
+{
+  "name": "esdoc-init",
+  "version": "0.0.1",
+  "description": "Providing the initialization of esdoc.",
+  "bin": "bin/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "dist": "cp -rf ./dist ~/.nvm/versions/node/v9.4.0/lib/node_modules/esdoc-init/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xingkongbj/esdoc-init.git"
+  },
+  "keywords": [
+    "esdoc",
+    "init",
+    "doc",
+    "jsdoc"
+  ],
+  "files": [
+    "bin",
+    "files",
+    "dist",
+    "README.md"
+  ],
+  "author": "xingkongbj",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xingkongbj/esdoc-init/issues"
+  },
+  "homepage": "https://github.com/xingkongbj/esdoc-init#readme",
+  "devDependencies": {
+    "typescript": "^2.9.1"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "command-exists": "^1.2.6",
+    "detect-installed": "^2.0.4",
+    "shelljs": "^0.8.2"
+  }
+}
