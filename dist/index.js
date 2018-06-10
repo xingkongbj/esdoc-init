@@ -26,7 +26,12 @@ function init() {
                 logger.log(chalk.red('Not found package.json!'));
                 process.exit(0);
             }
-            npm_install_1.installList(config_1.esdocPackage, 'npm');
+            let installResult = yield npm_install_1.installList(config_1.esdocPackage, 'npm');
+            if (installResult && installResult.some((obj) => obj.result === false)) {
+                logger.log(chalk.red('Installation failed!'));
+                process.exit(0);
+            }
+            logger.log(chalk.green('Installation complete.'));
             shell.cp('-rf', path.resolve(__dirname, '../files/*'), cwd);
             logger.log(chalk.green('Copy files successed.'));
             file_1.modifyFile(`${cwd}/package.json`, 'utf8', (str) => {

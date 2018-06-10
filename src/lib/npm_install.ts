@@ -1,5 +1,6 @@
 import { hasFile } from './file';
 import { getLogger } from './logger';
+import construct = Reflect.construct;
 
 const commandExists = require('command-exists');
 const shell = require('shelljs');
@@ -43,7 +44,7 @@ export async function installPackage(packageName: string, version?: string, inst
     } catch (e) {
         const logger = getLogger();
         logger.debug(e);
-        logger.log(chalk.red(`Install ${packageStr} failed.`));
+        logger.log(chalk.red(`Installed ${packageStr} failed.`));
         return false;
     }
     return true;
@@ -71,10 +72,26 @@ export async function updatePackage(packageName: string, version?: string, insta
     } catch (e) {
         const logger = getLogger();
         logger.debug(e);
-        logger.log(chalk.red(`Update ${packageStr} failed.`));
+        logger.log(chalk.red(`Updated ${packageStr} failed.`));
         return false;
     }
     return true;
+}
+
+
+/**
+ * 安装具体的npm包
+ * @param {String} obj 包名和版本
+ * @param {String} install 安装工具
+ */
+async function installs(obj: {name: string, version: string}, install?: string): Promise<boolean> {
+    const logger = getLogger();
+    logger.log(chalk.green(`Installing ${obj.name}${obj.version ? `@${obj.version}` : ''}`));
+    if (await detectInstalled(obj.name, { local: true })) {
+        return await updatePackage(obj.name, obj.version, install);
+    } else {
+        return await installPackage(obj.name, obj.version, install);
+    }
 }
 
 /**
@@ -82,16 +99,15 @@ export async function updatePackage(packageName: string, version?: string, insta
  * @param {Array} packageList 包名称
  * @param {String} install 安装工具
  */
-export async function installList(packageList: {name: string, version: string}[], install?: string) {
+export async function installList(packageList: {name: string, version: string}[], install?: string): Promise<{name: string, result: boolean}[]> {
     const logger = getLogger();
+    const result = [];
     if (packageList && packageList.length) {
-        packageList.forEach(async (arr) => {
-            logger.log(chalk.green(`${arr.name}${arr.version ? `@${arr.version}` : ''}`));
-            if (await detectInstalled(arr.name, { local: true })) {
-                await updatePackage(arr.name, arr.version, install);
-            } else {
-                await installPackage(arr.name, arr.version, install);
-            }
-        });
+        for (let i = 0; i < packageList.length; i++) {
+            const name = packageList[i].name;
+            const res = await installs(packageList[i], 'npm');
+            result.push({'name' : name, 'result': res});
+        }
     }
+    return result;
 }

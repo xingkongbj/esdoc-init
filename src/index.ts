@@ -19,7 +19,12 @@ export async function init() {
             process.exit(0);
         }
         // 安装程序
-        installList(esdocPackage, 'npm');
+        let installResult = await installList(esdocPackage, 'npm');
+        if (installResult && installResult.some((obj: {name: string, result: boolean}) => obj.result === false)) {
+            logger.log(chalk.red('Installation failed!'));
+            process.exit(0);
+        }
+        logger.log(chalk.green('Installation complete.'));
         // 复制文件
         shell.cp('-rf', path.resolve(__dirname, '../files/*'), cwd);
         logger.log(chalk.green('Copy files successed.'));

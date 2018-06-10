@@ -45,7 +45,7 @@ function installPackage(packageName, version, install) {
         catch (e) {
             const logger = logger_1.getLogger();
             logger.debug(e);
-            logger.log(chalk.red(`Install ${packageStr} failed.`));
+            logger.log(chalk.red(`Installed ${packageStr} failed.`));
             return false;
         }
         return true;
@@ -72,27 +72,37 @@ function updatePackage(packageName, version, install) {
         catch (e) {
             const logger = logger_1.getLogger();
             logger.debug(e);
-            logger.log(chalk.red(`Update ${packageStr} failed.`));
+            logger.log(chalk.red(`Updated ${packageStr} failed.`));
             return false;
         }
         return true;
     });
 }
 exports.updatePackage = updatePackage;
+function installs(obj, install) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const logger = logger_1.getLogger();
+        logger.log(chalk.green(`Installing ${obj.name}${obj.version ? `@${obj.version}` : ''}`));
+        if (yield detectInstalled(obj.name, { local: true })) {
+            return yield updatePackage(obj.name, obj.version, install);
+        }
+        else {
+            return yield installPackage(obj.name, obj.version, install);
+        }
+    });
+}
 function installList(packageList, install) {
     return __awaiter(this, void 0, void 0, function* () {
         const logger = logger_1.getLogger();
+        const result = [];
         if (packageList && packageList.length) {
-            packageList.forEach((arr) => __awaiter(this, void 0, void 0, function* () {
-                logger.log(chalk.green(`${arr.name}${arr.version ? `@${arr.version}` : ''}`));
-                if (yield detectInstalled(arr.name, { local: true })) {
-                    yield updatePackage(arr.name, arr.version, install);
-                }
-                else {
-                    yield installPackage(arr.name, arr.version, install);
-                }
-            }));
+            for (let i = 0; i < packageList.length; i++) {
+                const name = packageList[i].name;
+                const res = yield installs(packageList[i], 'npm');
+                result.push({ 'name': name, 'result': res });
+            }
         }
+        return result;
     });
 }
 exports.installList = installList;
