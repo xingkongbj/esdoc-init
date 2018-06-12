@@ -28,6 +28,13 @@ export async function init() {
         // 复制文件
         shell.cp('-rf', path.resolve(__dirname, '../files/*'), cwd);
         logger.log(chalk.green('Copy files successed.'));
+        // 修改 .gitignore
+        modifyFile(`${cwd}/.gitignore`, 'utf8', (str: string) => {
+            let ignore = str.replace(/\n\/esdocs/g,'\n');
+            ignore = ignore + '\n/esdocs';
+            ignore = ignore.replace(/\n+/g,'\n');
+            return ignore;
+        });
         // 修改 package.json
         modifyFile(`${cwd}/package.json`, 'utf8', (str: string) => {
             let json = JSON.parse(str);

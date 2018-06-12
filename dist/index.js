@@ -34,6 +34,12 @@ function init() {
             logger.log(chalk.green('Installation complete.'));
             shell.cp('-rf', path.resolve(__dirname, '../files/*'), cwd);
             logger.log(chalk.green('Copy files successed.'));
+            file_1.modifyFile(`${cwd}/.gitignore`, 'utf8', (str) => {
+                let ignore = str.replace(/\n\/esdocs/g, '\n');
+                ignore = ignore + '\n/esdocs';
+                ignore = ignore.replace(/\n+/g, '\n');
+                return ignore;
+            });
             file_1.modifyFile(`${cwd}/package.json`, 'utf8', (str) => {
                 let json = JSON.parse(str);
                 json.scripts.esdoc = 'rm -rf ./esdocs && esdoc && open ./esdocs/index.html';
